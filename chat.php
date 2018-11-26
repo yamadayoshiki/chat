@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<?php
+	setcookie("uname",$GET["uname"], time() + (60 * 60 * 24 * 7));
+?><!DOCTYPE html>
 <html>
 <head>
 	<title>チャット</title>
@@ -22,26 +24,71 @@
 <body>
 
 <h1>秘密のチャット</h1>
-<form action="write.php">
+<form>
 <?php
 	echo $_GET['uname'];
 ?>
-	<input type = "hidden" name = "uname" value = "<?= $_GET['uname']?>">
-	<input type="text" name="msg">
-	<button>送信</button>
+	<input type = "hidden" id = "uname" value = "<?= $_GET['uname']?>">
+	<input type="text" id="msg">
+	<button type = "button" id = "sbmt">送信</button>
 </form>
 
-<?php
-$fp = fopen("data.txt", "r");
-while( ($buff=fgets($fp)) != false ){
-	$line = explode("\t", $buff);
-	echo $line[0].":";
-	echo $line[1];
-	echo " <span class=\"timestamp\">".date("Y-m-d H:i:s", $line[2])."</span>";
-	echo "<br>\n";
-}
-fclose($fp);
-?>
+<div id = "chatLog">
+	
+</div>
+
+<script>
+	window.onload = function(){
+		getLog();
+		
+		document.querySelector("#sbmt").addEventListener("click",function(){
+			var uname	= document.querySelector("#uname").value;
+			var msg	= document.querySelector("#msg").value;
+			var request = new XMLHttpRequest();
+			request.open("POST","http://127.0.0.1/chat2/set.php",false);
+
+			request.onreadystatechange = function(){
+				if(request.status === 200 || request.status === 304){
+				var response = request.responseText;
+				var json = JSON.parse(response);
+				
+			}
+			else if(request.status >= 500){
+				alert("SeverError");
+			}
+			
+		request.setRequestHeader("Content-Type");
+		request.send("uname=" + encodeURIComponent(uname) + "&" + "msg="+ encodeURIComponent(msg));
+		}
+		});
+	};
+
+	function getLog(){
+			var request = new XMLHttpRequest();
+			request.open("GET","http://127.0.0.1/chat2/get.php",false);
+
+			request.onreadystatechange = function(){
+				if(request.status === 200 || request.status === 304){
+				var response = request.responseText;
+				var json = JSON.parse(response);
+				
+				var html = "";
+				for(i = 0; i < json.length;i++){
+					html += json[i]["name"] + ":" + json[i]["message"] + "<br>"; 
+				}
+				document.querySelector("#chatLog").innerHTML = html;
+			}
+			else if(request.status >= 500){
+				alert("SeverError");
+			}
+		};
+		request.onerror = function(e){
+		console.log(e)
+		};
+		
+		request.send();
+	}
+</script>
 
 </body>
 </html>
