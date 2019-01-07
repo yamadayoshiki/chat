@@ -1,15 +1,11 @@
 <?php
-$result = [];
+require("lib.php");
 
-$fp = fopen("data.txt", "r");
-while( ($buff=fgets($fp)) != false ){
-	$line = explode("\t", $buff);
-	$result[] = [
-		"name"		=>$line[0],
-		"message"	=>$line[1],
-		"time"		=>$line[2]
-	];
+$chat = new ChatAPI();
+if( array_key_exists("name", $_GET) ){
+	$chat->get($_GET["name"]);
 }
-fclose($fp);
+else{
+	$chat->get();
+}
 
-echo json_encode($result);

@@ -1,13 +1,8 @@
 <?php
-$uname = $_POST["uname"];
-$msg 	= $_POST["msg"];
-$time	= time();
+require('lib.php');
 
-$fp = fopen("data.txt", "r");
-flock($fp, LOCK_EX);
-fwrite($fp, $uname."\t".$msg."\t".$time."\n");
-flock($fp, LOCK_UN);
-fclose($fp);
+$message = $_POST["msg"];
 
+$chat = new ChatAPI();
+$chat->set($message);
 
-echo json_encode(["status"=> true]);
