@@ -10,7 +10,7 @@
 	<title>チャット</title>
 	<style>
 		h1{
-			font-size:12pt;
+			font-size:20pt;
 			border-bottom: 1px solid gray;
 			color: blue;
 		}
@@ -22,6 +22,11 @@
 		.timestamp{
 			color: lightgray;
 			font-size: 8pt;
+		}
+		div{
+			border: 5px solid gray;
+			padding: 10px;
+			margin-bottom: 20px;
 		}
 	</style>
 </head>
@@ -66,7 +71,6 @@ window.onload = function(){
 			 alert("ServerError");
 		  }
 	    };
-
        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
        request.send(
